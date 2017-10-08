@@ -24,8 +24,7 @@
 //  user as a grand prize winner.
 
 #include <iostream>
-#include <ctime>
-#include <cstdlib>
+#include <random>
 
 using namespace std;
 
@@ -43,10 +42,7 @@ int main()
     
     for(int number = 0 ; number < INT_LOTTERY_NUMBERS ; number++)
     {
-        do
-        {
-            intLotteryArray[number] = generateRandomNumber();
-        } while(intLotteryArray[number] > 10);
+        intLotteryArray[number] = generateRandomNumber();
     }
     
     getPlayerInput(intLotteryArray, intPlayerArray);
@@ -61,37 +57,21 @@ int main()
 
 int generateRandomNumber()
 {
-    int intResult,
-    intTempTime;
+    int intResult;
     
-    float fltClock;
+    // Use random_device to generate seed value
+    random_device rd;
     
-    intTempTime = time(0);
+    // Seed Mersenne twister engine with random_device result
+    mt19937 engine(rd());
     
-    //Test when intTempTime is the same as time(0)
-    //It is sometimes false and falls through
-    //With no returned value
-    while(intTempTime == time(0))
-    {
-        while(intTempTime != time(0))
-        {
-            fltClock = time(0);
-            
-            unsigned seed = time(0);
-            
-            srand(seed);
-            
-            intResult = rand() % 9;
-            
-            //intResult += 1;
-            
-            //Used for debug to see random outputs with heads/tails result
-            //            cout << intResult << endl << time(0) << endl;
-            
-            return intResult;
-        }
-    }
-    return 0;
+    // Define what output from engine will be
+    uniform_int_distribution<> distribution(0,9);
+    
+    // Use distribution with engine to generate numbers
+    intResult = distribution(engine);
+    
+    return intResult;
 }
 
 void getPlayerInput(const int intAnswers[], int intGuesses[])
