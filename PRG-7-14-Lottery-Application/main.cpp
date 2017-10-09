@@ -37,24 +37,35 @@ void checkArraySimilarity(const int[], const int[]);
 
 int main()
 {
+    // Declare array for lottery numbers (will be auto populated)
     int intLotteryArray[INT_LOTTERY_NUMBERS];
+    
+    // Declare array for player numbers (user generated)
     int intPlayerArray[INT_LOTTERY_NUMBERS];
     
+    // Loop used to populate winning numbers lottery array
+    // easily extensible if the total number of numbers
+    // needs to change
     for(int number = 0 ; number < INT_LOTTERY_NUMBERS ; number++)
     {
         intLotteryArray[number] = generateRandomNumber();
     }
     
+    // Get player input to fill second player array
     getPlayerInput(intLotteryArray, intPlayerArray);
     
+    // Output numbers...
     outputNumbers(intLotteryArray, intPlayerArray);
     
+    // ...then check to see if there's a match
+    // (this happens fast)
     checkArraySimilarity(intLotteryArray, intPlayerArray);
     
     return 0;
 }
 
-
+// This function uses the Mersenne twister PRNG
+// to generate numbers one at a time.
 int generateRandomNumber()
 {
     int intResult;
@@ -80,11 +91,13 @@ void getPlayerInput(const int intAnswers[], int intGuesses[])
     
     for(int number = 0 ; number < INT_LOTTERY_NUMBERS ; number++)
     {
-        cout << "Please enter your guess for number " << number + 1 << ": ";
+        cout << "Please enter your guess for number " << (number + 1) << ": ";
         cin >> intTemp;
         while(!cin || intTemp < 0 || intTemp > 9)
         {
             cout << "Please enter a number between 0 and 9: ";
+            cin.clear();
+            cin.ignore();
             cin >> intTemp;
         }
         intGuesses[number] = intTemp;
@@ -108,24 +121,36 @@ void outputNumbers(const int intAnswers[], const int intGuesses[])
 
 void checkArraySimilarity(const int intAnswers[], const int intGuesses[])
 {
+    // Declare accumulator to hold total matches
     int intMatches;
     
+    // Initialize accumulator
     intMatches = 0;
     
+    // Loop through both arrays and compare both arrays at index i
     for(int i = 0 ; i < INT_LOTTERY_NUMBERS ; i++)
     {
+        // If there's a match, increment the accumulator
         if(intGuesses[i] == intAnswers[i])
         {
             intMatches++;
         }
     }
+    
+    // Test first case, likeliest outcome, partial match
     if(intMatches != 5)
     {
         cout << "You matched " << intMatches << " numbers!" << endl;
     }
+    // Test second case, unlikely to match all five
     else if(intMatches == 5)
     {
         cout << "Congratulations! You won the lottery and are a grand prize winner!" << endl;
+    }
+    // Output error message if the first two cases fail to pass
+    else
+    {
+        cout << "ERROR COMPARING ARRAYS" << endl;
     }
 }
 
